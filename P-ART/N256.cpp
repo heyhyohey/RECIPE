@@ -18,6 +18,9 @@ namespace ART_ROWEX {
             return false;
         }
 
+		/* HJY ntstore */
+		flush = true;
+		
         if (flush) movnt64((uint64_t *)&children[key], (uint64_t)val, false, true);
         else children[key].store(val, std::memory_order_relaxed);
         count++;

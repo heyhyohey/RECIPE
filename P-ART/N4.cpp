@@ -22,6 +22,9 @@ namespace ART_ROWEX {
         uint16_t nextIndex = compactCount++;
         count++;
 
+		// HJY ntstore
+		flush = true;
+
         if (flush) {
             keys[nextIndex].store(key, std::memory_order_release);
             clflush((char *)this, sizeof(N4), false, true);

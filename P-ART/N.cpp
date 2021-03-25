@@ -31,7 +31,7 @@ namespace ART_ROWEX {
 
     inline void N::mfence()
     {
-        asm volatile("sfence":::"memory");
+        // asm volatile("sfence":::"memory");
     }
 
     inline void N::clflush(char *data, int len, bool front, bool back)
@@ -47,6 +47,11 @@ namespace ART_ROWEX {
 #elif CLFLUSH_OPT
             asm volatile(".byte 0x66; clflush %0" : "+m" (*(volatile char *)(ptr)));
 #elif CLWB
+			/* clflush */
+            // asm volatile("clflush %0" : "+m" (*(volatile char *)ptr));
+			/* clflushopt */
+            // asm volatile(".byte 0x66; clflush %0" : "+m" (*(volatile char *)(ptr)));
+			/* clwb */
             asm volatile(".byte 0x66; xsaveopt %0" : "+m" (*(volatile char *)(ptr)));
 #endif
             while (read_tsc() < etsc) cpu_pause();
@@ -186,7 +191,8 @@ namespace ART_ROWEX {
             return;
         }
 
-        clflush((char *)nBig, sizeof(biggerN), false, true);
+		// HJY remove clflush
+        // clflush((char *)nBig, sizeof(biggerN), false, true);
         N::change(parentNode, keyParent, nBig);
         parentNode->writeUnlock();
 
@@ -210,7 +216,8 @@ namespace ART_ROWEX {
             return true;
         }
 
-        clflush((char *)nNew, sizeof(curN), false, true);
+		// HJY remove clflush
+        // clflush((char *)nNew, sizeof(curN), false, true);
         N::change(parentNode, keyParent, nNew);
         parentNode->writeUnlock();
 
@@ -334,7 +341,8 @@ namespace ART_ROWEX {
 
         n->remove(key, true, true);
         n->copyTo(nSmall);
-        clflush((char *) nSmall, sizeof(smallerN), false, true);
+		// HJY remove clflush
+        // clflush((char *) nSmall, sizeof(smallerN), false, true);
         N::change(parentNode, keyParent, nSmall);
 
         parentNode->writeUnlock();
@@ -430,7 +438,8 @@ namespace ART_ROWEX {
             p.prefixCount = 0;
             this->prefix.store(p, std::memory_order_release);
         }
-        if (flush) clflush((char *)&(this->prefix), sizeof(Prefix), false, true);
+		// HJY remove clflush
+        if (flush); // clflush((char *)&(this->prefix), sizeof(Prefix), false, true);
     }
 
     void N::addPrefixBefore(N* node, uint8_t key) {
@@ -444,7 +453,8 @@ namespace ART_ROWEX {
         }
         p.prefixCount += nodeP.prefixCount + 1;
         this->prefix.store(p, std::memory_order_release);
-        clflush((char *)&this->prefix, sizeof(Prefix), false, true);
+		// HJY remove clflush
+        // clflush((char *)&this->prefix, sizeof(Prefix), false, true);
     }
 
     bool N::isLeaf(const N *n) {

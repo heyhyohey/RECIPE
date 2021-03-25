@@ -258,7 +258,8 @@ namespace ART_ROWEX {
 
     void Tree::insert(const Key *k, ThreadInfo &epocheInfo) {
 	//art_cout << "Inserting key " << k->fkey << std::endl;
-        N::clflush((char *)k, sizeof(Key) + k->key_len, false, true);
+		/* HJY remove clflush */
+        // N::clflush((char *)k, sizeof(Key) + k->key_len, false, true);
         EpocheGuard epocheGuard(epocheInfo);
         restart:
         bool needRestart = false;
@@ -296,7 +297,8 @@ namespace ART_ROWEX {
                     // 2)  add node and (tid, *k) as children
                     newNode->insert(k->fkey[nextLevel], N::setLeaf(k), false);
                     newNode->insert(nonMatchingKey, node, false);
-                    N::clflush((char *)newNode, sizeof(N4), false, true);
+					/* HJY remove clflush */
+                    // N::clflush((char *)newNode, sizeof(N4), false, true);
 
                     // 3) lockVersionOrRestart, update parentNode to point to the new node, unlock
                     parentNode->writeLockOrRestart(needRestart);
@@ -372,7 +374,8 @@ namespace ART_ROWEX {
                 auto n4 = new N4(level + prefixLength, &k->fkey[level], prefixLength);
                 n4->insert(k->fkey[level + prefixLength], N::setLeaf(k), false);
                 n4->insert(key->fkey[level + prefixLength], nextNode, false);
-                N::clflush((char *)n4, sizeof(N4), false, true);
+				/* HJY remove clflush */
+                // N::clflush((char *)n4, sizeof(N4), false, true);
 
                 N::change(node, k->fkey[level - 1], n4);
                 node->writeUnlock();

@@ -13,10 +13,14 @@ namespace ART_ROWEX {
         uint16_t nextIndex = compactCount++;
         count++;
 
+		/* HJY ntstore */
+		flush = true;
+
         if (flush) {
             keys[nextIndex].store(flipSign(key), std::memory_order_release);
             // this clflush will failure-atomically flush the cache line including counters and entire key entries
-            clflush((char *)this, sizeof(uintptr_t), false, true);
+			/* HJY remove clflush */
+            // clflush((char *)this, sizeof(uintptr_t), false, true);
             movnt64((uint64_t *)&children[nextIndex], (uint64_t)n, false, true);
         } else {
             keys[nextIndex].store(flipSign(key), std::memory_order_relaxed);

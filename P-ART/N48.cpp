@@ -19,9 +19,13 @@ namespace ART_ROWEX {
             }
         }
 
+		/* HJY ntstore */
+		flush = true;
+
         if (flush) {
             children[compactCount].store(n, std::memory_order_release);
-            clflush((char *)&children[compactCount], sizeof(N *), false, true);
+			/* HJY remove clflush */
+            // clflush((char *)&children[compactCount], sizeof(N *), false, true);
             uint64_t *childIndex64 = (uint64_t *)childIndex;
             uint64_t index64 = childIndex64[key/8];
             uint8_t *index8 = (uint8_t *)&index64;
@@ -70,7 +74,8 @@ namespace ART_ROWEX {
 
         if (flush) {
             children[childIndex[k]].store(nullptr, std::memory_order_release);
-            clflush((char *)&children[childIndex[k]], sizeof(N *), false, true);
+			/* HJY remove clflush */
+            // clflush((char *)&children[childIndex[k]], sizeof(N *), false, true);
             uint64_t *childIndex64 = (uint64_t *)childIndex;
             uint64_t index64 = childIndex64[k/8];
             uint8_t *index8 = (uint8_t *)&index64;
