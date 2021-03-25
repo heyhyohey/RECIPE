@@ -269,6 +269,7 @@ namespace ART_ROWEX {
         N *parentNode = nullptr;
         uint8_t parentKey, nodeKey = 0;
         uint32_t level = 0;
+		printf("tree::insert\n");
 
         while (true) {
             parentNode = node;
@@ -282,9 +283,12 @@ namespace ART_ROWEX {
             Prefix remainingPrefix;
             switch (checkPrefixPessimistic(node, k, nextLevel, nonMatchingKey, remainingPrefix,
                                                            this->loadKey)) { // increases level
-                case CheckPrefixPessimisticResult::SkippedLevel:
+                case CheckPrefixPessimisticResult::SkippedLevel: {
+					printf("NoMatch\n");
                     goto restart;
+				 }
                 case CheckPrefixPessimisticResult::NoMatch: {
+					printf("NoMatch\n");
                     assert(nextLevel < k->getKeyLen()); //prevent duplicate key
                     node->lockVersionOrRestart(v, needRestart);
                     if (needRestart) goto restart;
@@ -372,6 +376,7 @@ namespace ART_ROWEX {
                 }
 
                 auto n4 = new N4(level + prefixLength, &k->fkey[level], prefixLength);
+				printf("%d\n", sizeof(N4));
                 n4->insert(k->fkey[level + prefixLength], N::setLeaf(k), false);
                 n4->insert(key->fkey[level + prefixLength], nextNode, false);
 				/* HJY remove clflush */

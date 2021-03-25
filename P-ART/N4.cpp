@@ -24,6 +24,7 @@ namespace ART_ROWEX {
 
 		// HJY ntstore
 		flush = true;
+		printf("N4::insert\n");
 
         if (flush) {
             keys[nextIndex].store(key, std::memory_order_release);
